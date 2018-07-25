@@ -51,13 +51,12 @@ $(function() {
         		expect(Object.keys(allFeeds[i])).toContain('name');
         		expect(allFeeds[i].name).toBeDefined();
         		expect(allFeeds[i].name).not.toBe('');
-
         	}
         });
     });
 
 
-    /* TODO: Write a new test suite named "The menu" */
+    /* DONE: Write a new test suite named "The menu" */
 
        	describe('The menu', function() {
 
@@ -87,30 +86,47 @@ $(function() {
 
     
     	describe('Initial Entries', function() {
-    	/* TODO: Write a test that ensures when the loadFeed
+    	/* DONE: Write a test that ensures when the loadFeed
          * function is called and completes its work, there is at least
          * a single .entry element within the .feed container.
          * Remember, loadFeed() is asynchronous so this test will require
          * the use of Jasmine's beforeEach and asynchronous done() function.
          */
-
+         	var container = $('.feed');
          	beforeEach(function(done) {
-         		loadFeed(function(){
-         			done()
-         		})
+         		loadFeed(0, done);
+         		google.setOnLoadCallback($.ajax(function(){
+         			done(0);
+         		}));
          	});
 
          	it ('there is at least one entry at the execution', function(done) {
-         	expect($('.feed').entry).not.toBeDefined();
-         	expect($('.feed').entry).not.toBe('');
-         	done();
+         		expect(container.entry).not.toBe('');
+         		done();
          	});
         });
 	
-    /* TODO: Write a new test suite named "New Feed Selection" */
+    /* DONE: Write a new test suite named "New Feed Selection" */
+    	describe('New Feed Selection', function() {
 
-        /* TODO: Write a test that ensures when a new feed is loaded
+        /* DONE: Write a test that ensures when a new feed is loaded
          * by the loadFeed function that the content actually changes.
          * Remember, loadFeed() is asynchronous.
          */
+        	beforeEach(function (done) {
+        		loadFeed(1, function() { 
+          			window.firstFeed = document.querySelector('.entry-link').innerHTML;
+          			loadFeed(2, function() {
+            			window.secondFeed = document.querySelector('.entry-link').innerHTML;
+            			done();
+          			});
+        		});
+        	});
+
+        	it('loads new feeds', function(done) {
+        		expect(window.secondFeed !== window.firstFeed).toBe(true);
+        		done();
+        	});	
+    	});
+
 })();
